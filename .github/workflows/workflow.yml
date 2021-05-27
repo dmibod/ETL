@@ -10,14 +10,14 @@ on:
 #   AZURE_FUNCTIONAPP_PUBLISH_PROFILE
 #
 # 2. Change these variables for your configuration:
-env:
-  AZURE_FUNCTIONAPP_NAME: dmytrobodnaraf  # set this to your application's name
-  AZURE_FUNCTIONAPP_PACKAGE_PATH: './src' # set this to the path to your web app project, defaults to the repository root
-  DOTNET_VERSION: '3.1.x'               # set this to the dotnet version to use
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest # bat-ubuntu2004
+    env:
+      AZURE_FUNCTIONAPP_NAME: dmytrobodnaraf  # set this to your application's name
+      AZURE_FUNCTIONAPP_PACKAGE_PATH: './src' # set this to the path to your web app project, defaults to the repository root
+      DOTNET_VERSION: '3.1.x'               # set this to the dotnet version to use
     steps:
     - uses: actions/checkout@master
     - uses: actions/setup-dotnet@v1
