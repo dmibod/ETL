@@ -5,7 +5,7 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         services.AddSingleton<ITweetFilter, DefaultTweetFilter>();
-        services.AddHostedService<Worker>();
+        services.AddHostedService<TweetAnalysisWorker>();
     })
     .Build();
 

@@ -34,4 +34,4 @@ Tweets that match the prompt criteria will be appended to `results.jsonl` in JSO
 
 ## Configuration
 
-Modify `Worker.cs` to adjust the list of monitored accounts or change the prompt used when calling the LLM. Prompt templates can be stored in files or environment variables and passed to the worker as needed.
+Modify `TweetAnalysisWorker.cs` to adjust the list of monitored accounts or change the prompt used when calling the LLM. Prompt templates can be stored in files or environment variables and passed to the worker as needed.
