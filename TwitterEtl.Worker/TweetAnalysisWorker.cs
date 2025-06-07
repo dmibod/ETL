@@ -5,15 +5,15 @@ using Tweetinvi;
 using Tweetinvi.Models;
 using System.Linq;
 
-public class Worker : BackgroundService
+public class TweetAnalysisWorker : BackgroundService
 {
-    private readonly ILogger<Worker> _logger;
+    private readonly ILogger<TweetAnalysisWorker> _logger;
     private readonly TwitterClient _twitterClient;
     private readonly ITweetFilter _tweetFilter;
     private readonly TweetStateRepository _stateRepository;
     private readonly string[] _accounts = new[] { "@example" };
 
-    public Worker(ILogger<Worker> logger, ITweetFilter tweetFilter)
+    public TweetAnalysisWorker(ILogger<TweetAnalysisWorker> logger, ITweetFilter tweetFilter)
     {
         _logger = logger;
         _tweetFilter = tweetFilter;
