@@ -1,0 +1,21 @@
+# Visual Studio Code files
+.vscode/
+*.user
+
+# Goland IDE files
+.idea/
+
+# Output dir
+bin/
+obj/
+out/
+
+# App settings
+appsettings.Development.json
+appsettings.Test.json
+
+# Env vars
+.env
+
+# db
+state.db

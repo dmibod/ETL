@@ -1,9 +1,13 @@
+using System;
+using System.IO;
 using System.Text.Json;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Tweetinvi;
 using Tweetinvi.Models;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 public class TweetAnalysisWorker : BackgroundService
 {
@@ -73,7 +77,7 @@ public class TweetAnalysisWorker : BackgroundService
 
     private static async Task WriteResultAsync(ITweet tweet)
     {
-        var record = new { tweet.CreatedAt, tweet.FullText, tweet.Author.ScreenName };
+        var record = new { tweet.CreatedAt, tweet.FullText, tweet.CreatedBy.ScreenName };
         await File.AppendAllTextAsync("results.jsonl", JsonSerializer.Serialize(record) + "\n");
     }
 }
