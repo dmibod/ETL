@@ -4,7 +4,7 @@ This repository contains a simple worker service that polls tweets from specifie
 
 ## Prerequisites
 
-* .NET 6 SDK
+* .NET 8 SDK
 * Twitter API credentials
 * Access to an OpenAI (or Azure OpenAI) endpoint
 
