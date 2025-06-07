@@ -3,18 +3,21 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Tweetinvi;
 using Tweetinvi.Models;
+using System.Linq;
 
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
     private readonly TwitterClient _twitterClient;
     private readonly ITweetFilter _tweetFilter;
+    private readonly TweetStateRepository _stateRepository;
     private readonly string[] _accounts = new[] { "@example" };
 
     public Worker(ILogger<Worker> logger, ITweetFilter tweetFilter)
     {
         _logger = logger;
         _tweetFilter = tweetFilter;
+        _stateRepository = new TweetStateRepository();
         // In real code, keys should come from configuration or secrets
         _twitterClient = new TwitterClient(
             Environment.GetEnvironmentVariable("TWITTER_API_KEY"),
@@ -33,12 +36,29 @@ public class Worker : BackgroundService
                 {
                     var user = await _twitterClient.Users.GetUserAsync(account);
                     var timeline = await _twitterClient.Timelines.GetUserTimelineAsync(user);
-                    foreach (var tweet in timeline)
+
+                    var lastId = _stateRepository.GetLastTweetId(account);
+                    var newTweets = timeline
+                        .Where(t => t.Id > lastId)
+                        .OrderBy(t => t.Id);
+                    long maxId = lastId;
+
+                    foreach (var tweet in newTweets)
                     {
                         if (await _tweetFilter.ShouldProcessAsync(tweet))
                         {
                             await WriteResultAsync(tweet);
                         }
+
+                        if (tweet.Id > maxId)
+                        {
+                            maxId = tweet.Id;
+                        }
+                    }
+
+                    if (maxId > lastId)
+                    {
+                        _stateRepository.SetLastTweetId(account, maxId);
                     }
                 }
                 catch (Exception ex)
