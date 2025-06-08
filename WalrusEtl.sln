@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WalrusEtl.App", "WalrusEtl.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Twitter.Client", "Twitter.Client/Twitter.Client.csproj", "{C6A842D7-E8D9-4162-97CA-1ECD183F5EE8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Twitter.Client.Tests", "Twitter.Client.Tests/Twitter.Client.Tests.csproj", "{A880A729-63DD-43EF-946A-66F1469604B8}"
+EndProject
 Global
 GlobalSection(SolutionConfigurationPlatforms) = preSolution
 Debug|Any CPU = Debug|Any CPU
@@ -20,5 +22,9 @@ GlobalSection(ProjectConfigurationPlatforms) = postSolution
 {C6A842D7-E8D9-4162-97CA-1ECD183F5EE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 {C6A842D7-E8D9-4162-97CA-1ECD183F5EE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 {C6A842D7-E8D9-4162-97CA-1ECD183F5EE8}.Release|Any CPU.Build.0 = Release|Any CPU
+{A880A729-63DD-43EF-946A-66F1469604B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+{A880A729-63DD-43EF-946A-66F1469604B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+{A880A729-63DD-43EF-946A-66F1469604B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+{A880A729-63DD-43EF-946A-66F1469604B8}.Release|Any CPU.Build.0 = Release|Any CPU
 EndGlobalSection
 EndGlobal
