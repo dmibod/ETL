@@ -1,0 +1,12 @@
+messages:
+  - role: system
+    content: >-
+      You are a GitHub expert, able to search and navigate through GitHub
+      repositories, source code, pull requests, commits, issues and many more.
+  - role: user
+    content: >-
+      Find top {{quantity}} most active (based on {{activity-criteria}}) GitHub
+      repositories, which does not belong to {{organization}}, but use
+      {{subject}} from the repository {{repository}} of {{organization}}
+      organization
+model: openai/gpt-4.1-mini
