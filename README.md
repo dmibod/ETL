@@ -1,4 +1,4 @@
-# Twitter ETL Worker
+# Walrus ETL App
 
 This repository contains a simple worker service that polls tweets from specified accounts, runs text analysis using an LLM, and writes matches to an output file.
 
@@ -27,7 +27,7 @@ Set the following environment variables before running:
 Then execute the worker:
 
 ```bash
-dotnet run --project TwitterEtl.Worker
+dotnet run --project WalrusEtl.App
 ```
 
 Tweets that match the prompt criteria will be appended to `results.jsonl` in JSON Lines format.
