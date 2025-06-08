@@ -12,7 +12,7 @@ This repository contains a simple worker service that polls tweets from specifie
 
 ```bash
 # restore packages and build the solution
- dotnet build TwitterEtl.sln
+ dotnet build WalrusEtl.sln
 ```
 
 ## Running
