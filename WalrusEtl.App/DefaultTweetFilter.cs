@@ -24,7 +24,8 @@ public class DefaultTweetFilter : ITweetFilter
             return tweet.Text.ToLower().Contains("walrus", StringComparison.OrdinalIgnoreCase);
         }
 
-        var prompt = $"Answer only yes or no. Does the following tweet mention Walrus Protocol? Tweet: {tweet.Text}";
+        var prompt =
+            $"Answer only yes or no.\nDoes the following tweet mention Walrus Protocol?\n----------------\nTweet: \"{tweet.Text}\"";
         var response = await _openAiClient.GetCompletionsAsync("gpt-4o-mini", new CompletionsOptions
         {
             Prompts = { prompt },

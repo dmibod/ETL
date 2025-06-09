@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -16,7 +17,36 @@ public class TweetAnalysisWorker : BackgroundService
     private readonly ApiClient _twitterClient;
     private readonly ITweetFilter _tweetFilter;
     private readonly TweetStateRepository _stateRepository;
-    private readonly string[] _accounts = new[] { "SuiNetwork" };
+    private readonly HashSet<string> _accounts = new()
+    {
+        "altcoinbuzzio",
+        "a16z",
+        "aeyakovenko",
+        "AriannaSimpson",
+        "Atoma_Network",
+        "blockbaseco",
+        "bluefinapp",
+        "CertiKCommunity",
+        "Claynosaurz",
+        "coingecko",
+        "CoinMarketCap",
+        "CetusProtocol",
+        "decryptmedia",
+        "imperator_co",
+        "linera_io",
+        "ma2bd",
+        "martypartymusic",
+        "Mysten_Labs",
+        "navi_protocol",
+        "PythNetwork",
+        "SammyMzy",
+        "Scallop_io",
+        "StuFinancestech",
+        "SuiNetwork",
+        "suilendprotocol",
+        "syke0x",
+        "WalrusProtocol"
+    };
 
     public TweetAnalysisWorker(ILogger<TweetAnalysisWorker> logger, ITweetFilter tweetFilter)
     {
@@ -50,7 +80,7 @@ public class TweetAnalysisWorker : BackgroundService
                     {
                         if (await _tweetFilter.ShouldProcessAsync(tweet))
                         {
-                            await WriteResultAsync(tweet);
+                            await WriteResultAsync(tweet, account);
                         }
 
                         var id = long.Parse(tweet.Id);
@@ -70,15 +100,17 @@ public class TweetAnalysisWorker : BackgroundService
                 {
                     _logger.LogError(ex, "Error processing account {Account}", account);
                 }
+                
+                // due to the Twitter API rate limits, we should wait before the next request
+                await Task.Delay(TimeSpan.FromMinutes(16), stoppingToken);
             }
-            await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
         }
     }
 
 
-    private static async Task WriteResultAsync(GetPostsByUserIdResponse.Item tweet)
+    private static async Task WriteResultAsync(GetPostsByUserIdResponse.Item tweet, string account)
     {
-        var record = new { tweet.Id, tweet.Text };
+        var record = new { tweet.Id, tweet.Text, Author = account };
         await File.AppendAllTextAsync("results.jsonl", JsonSerializer.Serialize(record) + "\n");
     }
 }
