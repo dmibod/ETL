@@ -34,7 +34,7 @@ public class ApiClientTests
     [TestMethod]
     public async Task GetUseIdByNameAsync_ReturnsResponseAndUsesCorrectRequest()
     {
-        var json = "{\"Id\":\"123\",\"Name\":\"John\",\"Username\":\"john\"}";
+        var json = "{\"data\":{\"id\":\"123\",\"name\":\"John\",\"username\":\"john\"}}";
         var response = new HttpResponseMessage(HttpStatusCode.OK)
         {
             Content = new StringContent(json, Encoding.UTF8, "application/json")
@@ -43,7 +43,7 @@ public class ApiClientTests
         var httpClient = new HttpClient(handler);
         var client = new ApiClient(httpClient);
 
-        var result = await client.GetUseIdByNameAsync(new GetUseIdByNameRequest { Username = "john" });
+        var result = await client.GetUserIdByNameAsync(new GetUserIdByNameRequest { Username = "john" });
 
         Assert.IsNotNull(result);
         Assert.AreEqual("123", result!.Id);
@@ -58,7 +58,7 @@ public class ApiClientTests
     [TestMethod]
     public async Task GetPostsByUserIdAsync_ReturnsItemsAndUsesCorrectRequest()
     {
-        var json = "{\"Items\":[{\"Id\":\"1\",\"Text\":\"hello\"}]}";
+        var json = "{\"data\":[{\"id\":\"1\",\"text\":\"hello\"}]}";
         var response = new HttpResponseMessage(HttpStatusCode.OK)
         {
             Content = new StringContent(json, Encoding.UTF8, "application/json")

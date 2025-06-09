@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
-using Tweetinvi.Models;
+using Twitter.Client.Models;
 
 public interface ITweetFilter
 {
-    Task<bool> ShouldProcessAsync(ITweet tweet);
+    Task<bool> ShouldProcessAsync(GetPostsByUserIdResponse.Item tweet);
 }

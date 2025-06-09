@@ -4,10 +4,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="TweetinviAPI" Version="5.0.4" />
     <PackageReference Include="Azure.AI.OpenAI" Version="1.0.0-beta.5" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Twitter.Client\Twitter.Client.csproj" />
   </ItemGroup>
 </Project>

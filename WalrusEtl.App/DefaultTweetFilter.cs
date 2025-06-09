@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Azure.AI.OpenAI;
-using Tweetinvi.Models;
+using Twitter.Client.Models;
 
 public class DefaultTweetFilter : ITweetFilter
 {
@@ -9,27 +9,29 @@ public class DefaultTweetFilter : ITweetFilter
 
     public DefaultTweetFilter()
     {
-        var endpoint = Environment.GetEnvironmentVariable("OPENAI_ENDPOINT");
-        var key = Environment.GetEnvironmentVariable("OPENAI_KEY");
-        if (!string.IsNullOrEmpty(endpoint) && !string.IsNullOrEmpty(key))
+        var key = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+        if (!string.IsNullOrEmpty(key))
         {
-            _openAiClient = new OpenAIClient(new Uri(endpoint), new Azure.AzureKeyCredential(key));
+            _openAiClient = new OpenAIClient(key);
         }
     }
 
-    public async Task<bool> ShouldProcessAsync(ITweet tweet)
+    public async Task<bool> ShouldProcessAsync(GetPostsByUserIdResponse.Item tweet)
     {
         if (_openAiClient == null)
         {
             // Fallback simple keyword check
-            return tweet.FullText.Contains("AI", StringComparison.OrdinalIgnoreCase);
+            return tweet.Text.ToLower().Contains("walrus", StringComparison.OrdinalIgnoreCase);
         }
 
-        var prompt = $"Does this tweet mention AI or machine learning? {tweet.FullText}";
-        var response = await _openAiClient.GetCompletionsAsync(
-            Environment.GetEnvironmentVariable("OPENAI_DEPLOYMENT"),
-            prompt);
+        var prompt = $"Answer only yes or no. Does the following tweet mention Walrus Protocol? Tweet: {tweet.Text}";
+        var response = await _openAiClient.GetCompletionsAsync("gpt-4o-mini", new CompletionsOptions
+        {
+            Prompts = { prompt },
+            ChoicesPerPrompt = 1,
+            Temperature = 0.0f
+        });
         var text = response.Value.Choices[0].Text;
-        return text.Contains("yes", StringComparison.OrdinalIgnoreCase);
+        return text.ToLower().Contains("yes", StringComparison.OrdinalIgnoreCase);
     }
 }

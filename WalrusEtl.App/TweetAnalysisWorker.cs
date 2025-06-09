@@ -1,21 +1,22 @@
 using System;
 using System.IO;
+using System.Linq;
+using System.Net.Http;
 using System.Text.Json;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Tweetinvi;
-using Tweetinvi.Models;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Twitter.Client;
+using Twitter.Client.Models;
 
 public class TweetAnalysisWorker : BackgroundService
 {
     private readonly ILogger<TweetAnalysisWorker> _logger;
-    private readonly TwitterClient _twitterClient;
+    private readonly ApiClient _twitterClient;
     private readonly ITweetFilter _tweetFilter;
     private readonly TweetStateRepository _stateRepository;
-    private readonly string[] _accounts = new[] { "@example" };
+    private readonly string[] _accounts = new[] { "SuiNetwork" };
 
     public TweetAnalysisWorker(ILogger<TweetAnalysisWorker> logger, ITweetFilter tweetFilter)
     {
@@ -23,11 +24,9 @@ public class TweetAnalysisWorker : BackgroundService
         _tweetFilter = tweetFilter;
         _stateRepository = new TweetStateRepository();
         // In real code, keys should come from configuration or secrets
-        _twitterClient = new TwitterClient(
-            Environment.GetEnvironmentVariable("TWITTER_API_KEY"),
-            Environment.GetEnvironmentVariable("TWITTER_API_SECRET"),
-            Environment.GetEnvironmentVariable("TWITTER_ACCESS_TOKEN"),
-            Environment.GetEnvironmentVariable("TWITTER_ACCESS_SECRET"));
+        var httpClient = new HttpClient(/*handler*/);
+        httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {Environment.GetEnvironmentVariable("TWITTER_BEARER_TOKEN")}");
+        _twitterClient = new ApiClient(httpClient);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -38,12 +37,12 @@ public class TweetAnalysisWorker : BackgroundService
             {
                 try
                 {
-                    var user = await _twitterClient.Users.GetUserAsync(account);
-                    var timeline = await _twitterClient.Timelines.GetUserTimelineAsync(user);
+                    var user = await _twitterClient.GetUserIdByNameAsync(new GetUserIdByNameRequest{Username = account});
+                    var timeline = await _twitterClient.GetPostsByUserIdAsync(new GetPostsByUserIdRequest{UserId = user.Id, MaxResults = 25});
 
                     var lastId = _stateRepository.GetLastTweetId(account);
-                    var newTweets = timeline
-                        .Where(t => t.Id > lastId)
+                    var newTweets = timeline.Items
+                        .Where(t => long.Parse(t.Id) > lastId)
                         .OrderBy(t => t.Id);
                     long maxId = lastId;
 
@@ -54,9 +53,11 @@ public class TweetAnalysisWorker : BackgroundService
                             await WriteResultAsync(tweet);
                         }
 
-                        if (tweet.Id > maxId)
+                        var id = long.Parse(tweet.Id);
+                        
+                        if (id > maxId)
                         {
-                            maxId = tweet.Id;
+                            maxId = id;
                         }
                     }
 
@@ -75,9 +76,9 @@ public class TweetAnalysisWorker : BackgroundService
     }
 
 
-    private static async Task WriteResultAsync(ITweet tweet)
+    private static async Task WriteResultAsync(GetPostsByUserIdResponse.Item tweet)
     {
-        var record = new { tweet.CreatedAt, tweet.FullText, tweet.CreatedBy.ScreenName };
+        var record = new { tweet.Id, tweet.Text };
         await File.AppendAllTextAsync("results.jsonl", JsonSerializer.Serialize(record) + "\n");
     }
 }
