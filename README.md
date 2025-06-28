@@ -35,3 +35,16 @@ Tweets that match the prompt criteria will be appended to `results.jsonl` in JSO
 ## Configuration
 
 Modify `TweetAnalysisWorker.cs` to adjust the list of monitored accounts or change the prompt used when calling the LLM. Prompt templates can be stored in files or environment variables and passed to the worker as needed.
+
+```mermaid
+sequenceDiagram
+    participant dotcom
+    participant iframe
+    participant viewscreen
+    dotcom->>iframe: loads html w/ iframe url
+    iframe->>viewscreen: request template
+    viewscreen->>iframe: html & javascript
+    iframe->>dotcom: iframe ready
+    dotcom->>iframe: set mermaid data on iframe
+    iframe->>iframe: render mermaid
+```
